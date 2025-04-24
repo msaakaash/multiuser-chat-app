@@ -1,2 +1,4 @@
-# multiuser-chat-server
-A lightweight, concurrent terminal chat server using TCP sockets. Supports multiple clients for real-time CLI-based messaging, showcasing core networking and concurrency principles.
+# 💬 Multiuser Chat Server
+
+A lightweight, concurrent, terminal-based chat server built with TCP sockets. This server allows multiple clients to connect simultaneously and chat in real-time using simple CLI interfaces. It demonstrates key networking and concurrency concepts in a clean, extensible structure.
+
