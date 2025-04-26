@@ -2,18 +2,21 @@ package main
 
 import (
 	"bufio"
+	"crypto/tls"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 	"sync"
+
+	"github.com/joho/godotenv"
 )
 
 var (
 	clients     = make(map[string]net.Conn)
 	clientsLock = sync.Mutex{}
-
-	groups     = make(map[string][]string)
-	groupsLock = sync.Mutex{}
+	groups      = make(map[string][]string)
+	groupsLock  = sync.Mutex{}
 )
 
 func listMembers() string {
@@ -168,13 +171,34 @@ func handleConnection(conn net.Conn) {
 }
 
 func main() {
-	listener, err := net.Listen("tcp", ":8080")
+	// Load environment variables from .env file
+	err := godotenv.Load("../.env")
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		return
+	}
+
+	// Get the certificate and key file paths from the environment variables
+	certPath := os.Getenv("CERT_PATH")
+	keyPath := os.Getenv("KEY_PATH")
+
+	// Load the certificate
+	cert, err := tls.LoadX509KeyPair(certPath, keyPath)
+	if err != nil {
+		fmt.Println("Error loading certificate:", err)
+		return
+	}
+
+	// Use the certificate (for example, starting the TLS server)
+	config := &tls.Config{Certificates: []tls.Certificate{cert}}
+
+	listener, err := tls.Listen("tcp", ":8080", config)
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 		return
 	}
 	defer listener.Close()
-	fmt.Println("Server started on port 8080")
+	fmt.Println("Secure TLS Server started on port 8080")
 
 	for {
 		conn, err := listener.Accept()
