@@ -11,12 +11,15 @@ import (
 var (
 	clients     = make(map[string]net.Conn)
 	clientsLock = sync.Mutex{}
+
+	groups     = make(map[string][]string)
+	groupsLock = sync.Mutex{}
 )
 
 func listMembers() string {
 	clientsLock.Lock()
 	defer clientsLock.Unlock()
-	names := []string{}
+	var names []string
 	for name := range clients {
 		names = append(names, name)
 	}
@@ -38,17 +41,36 @@ func sendPrivate(sender, recipient, message string) {
 	defer clientsLock.Unlock()
 	if conn, ok := clients[recipient]; ok {
 		fmt.Fprintf(conn, "[PM from %s]: %s\n", sender, message)
-	} else {
+	} else if conn, ok := clients[sender]; ok {
+		fmt.Fprintf(conn, "User %s not found\n", recipient)
+	}
+}
+
+func sendGroupMessage(sender, groupName, message string) {
+	groupsLock.Lock()
+	members, exists := groups[groupName]
+	groupsLock.Unlock()
+
+	if !exists {
 		if conn, ok := clients[sender]; ok {
-			fmt.Fprintf(conn, "User %s not found\n", recipient)
+			fmt.Fprintf(conn, "Group %s does not exist.\n", groupName)
+		}
+		return
+	}
+
+	for _, member := range members {
+		if member != sender {
+			if conn, ok := clients[member]; ok {
+				fmt.Fprintf(conn, "[Group %s | %s]: %s\n", groupName, sender, message)
+			}
 		}
 	}
 }
 
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
-
 	reader := bufio.NewReader(conn)
+
 	conn.Write([]byte("Enter your name: "))
 	name, _ := reader.ReadString('\n')
 	name = strings.TrimSpace(name)
@@ -77,21 +99,63 @@ func handleConnection(conn net.Conn) {
 			break
 		}
 
-		// Format: public|message or private|recipient|message
-		if strings.HasPrefix(message, "public|") {
+		switch {
+		case strings.HasPrefix(message, "public|"):
 			msg := strings.TrimPrefix(message, "public|")
 			broadcast(name, msg)
-		} else if strings.HasPrefix(message, "private|") {
+
+		case strings.HasPrefix(message, "private|"):
 			parts := strings.SplitN(strings.TrimPrefix(message, "private|"), "|", 2)
 			if len(parts) == 2 {
-				recipient := parts[0]
-				msg := parts[1]
-				sendPrivate(name, recipient, msg)
+				sendPrivate(name, parts[0], parts[1])
 			} else {
 				conn.Write([]byte("Invalid private message format.\n"))
 			}
-		} else {
-			conn.Write([]byte("Invalid format. Use public|message or private|recipient|message\n"))
+
+		case strings.HasPrefix(message, "creategroup|"):
+			groupName := strings.TrimPrefix(message, "creategroup|")
+
+			groupsLock.Lock()
+			groups[groupName] = []string{name}
+			groupsLock.Unlock()
+			conn.Write([]byte("Enter member names (type 'done' to finish):\n"))
+
+			for {
+				member, err := reader.ReadString('\n')
+				if err != nil {
+					break
+				}
+				member = strings.TrimSpace(member)
+				if member == "done" {
+					break
+				}
+
+				clientsLock.Lock()
+				_, exists := clients[member]
+				clientsLock.Unlock()
+
+				if exists {
+					groupsLock.Lock()
+					groups[groupName] = append(groups[groupName], member)
+					groupsLock.Unlock()
+					conn.Write([]byte(fmt.Sprintf("Added %s to group %s\n", member, groupName)))
+				} else {
+					conn.Write([]byte(fmt.Sprintf("User %s does not exist.\n", member)))
+				}
+			}
+
+			conn.Write([]byte(fmt.Sprintf("Group %s created successfully.\n", groupName)))
+
+		case strings.HasPrefix(message, "groupmsg|"):
+			parts := strings.SplitN(strings.TrimPrefix(message, "groupmsg|"), "|", 2)
+			if len(parts) == 2 {
+				sendGroupMessage(name, parts[0], parts[1])
+			} else {
+				conn.Write([]byte("Invalid group message format.\n"))
+			}
+
+		default:
+			conn.Write([]byte("Invalid format.\n"))
 		}
 	}
 
