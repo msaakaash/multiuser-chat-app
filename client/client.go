@@ -1,15 +1,38 @@
+// client.go
 package main
 
 import (
 	"bufio"
+	"crypto/tls"
 	"fmt"
-	"net"
 	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	conn, err := net.Dial("tcp", "localhost:8080")
+	// Load environment variables from .env file
+	err := godotenv.Load("../.env")
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		return
+	}
+
+	// Get the server address from the environment variable
+	serverAddress := os.Getenv("SERVER_ADDRESS")
+	if serverAddress == "" {
+		fmt.Println("Error: SERVER_ADDRESS not set in .env file")
+		return
+	}
+
+	// Setup TLS config (important for self-signed certificates)
+	config := &tls.Config{
+		InsecureSkipVerify: true, // ⚡ Important for self-signed certs (in production, use real validation)
+	}
+
+	// Dial the server using the address from the environment variable
+	conn, err := tls.Dial("tcp", serverAddress, config)
 	if err != nil {
 		fmt.Println("Error connecting to server:", err)
 		return
