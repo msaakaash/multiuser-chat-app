@@ -1,18 +1,18 @@
-# 📡 Multi-User Chat Application
+# Multi-User Chat Application
 
 A secure and scalable multi-user chat application built using Go, featuring **private**, **public**, and **group messaging** functionalities. The app uses **TLS encryption** to secure communication between clients and server.
 
 
-## ✨ Features
+## Features
 
-- 🔒 **Private Messaging**: Send direct messages to a specific user.
-- 🌐 **Public Messaging**: Broadcast messages to all connected users.
-- 👥 **Group Messaging**: Create groups and chat within them.
-- 🛡 **TLS Encryption**: Secure all communication using SSL/TLS certificates and keys generated via OpenSSL.
+- **Private Messaging**: Send direct messages to a specific user.
+- **Public Messaging**: Broadcast messages to all connected users.
+- **Group Messaging**: Create groups and chat within them.
+- **TLS Encryption**: Secure all communication using SSL/TLS certificates and keys generated via OpenSSL.
 
 
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Language**: Go (Golang)
 - **Security**: TLS/SSL (OpenSSL Certificates)
@@ -20,7 +20,7 @@ A secure and scalable multi-user chat application built using Go, featuring **pr
 
 
 
-## 🚀 Installation and Setup
+## Installation and Setup
 
 ### 1. Install Go
 
@@ -76,7 +76,7 @@ You can run multiple clients to simulate multiple users chatting.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions from everyone!
 
@@ -96,34 +96,12 @@ We welcome contributions from everyone!
 5. **Open** a Pull Request.
 
 
-## 📄 License
-
-```
-MIT License
-
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights  
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
-copies of the Software, and to permit persons to whom the Software is          
-furnished to do so, subject to the following conditions:                       
-
-The above copyright notice and this permission notice shall be included in    
-all copies or substantial portions of the Software.                            
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN      
-THE SOFTWARE.
-```
+## License  
+This project is licensed under the [MIT License](LICENSE).
 
 
-## 📢 Additional Notes
+
+## Additional Notes
 
 - Ensure the server is running before clients attempt to connect.
 - The communication between client and server is fully encrypted with TLS.
