@@ -74,7 +74,10 @@ go run client.go
 
 You can run multiple clients to simulate multiple users chatting.
 
----
+## Code of Conduct
+
+Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) before contributing to this project.
+
 
 ## Contributing
 
