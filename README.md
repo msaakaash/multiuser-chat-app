@@ -99,18 +99,23 @@ We welcome contributions from everyone!
 5. **Open** a Pull Request.
 
 
-## License  
-This project is licensed under the [MIT License](LICENSE).
-
-
-
 ## Additional Notes
 
 - Ensure the server is running before clients attempt to connect.
 - The communication between client and server is fully encrypted with TLS.
 - Groups can be created dynamically and members can join iteratively.
 
+## Code of Conduct
+Please read our [Code of Conduct](docs/CODE_OF_CONDUCT.md) before contributing to this project.
+
+
+## Security
+If you discover a vulnerability, please refer to our [Security Policy](docs/SECURITY.md) for instructions on how to report it responsibly.
+
+## License  
+This project is licensed under the [MIT License](LICENSE).
+
 
  ## Author
- [**Aakaash M S**](https://github.com/msaakaash)
+[**Aakaash M S**](https://github.com/msaakaash)
 
